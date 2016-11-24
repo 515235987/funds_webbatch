@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<context:annotation-config />
+
+	<!-- 自动扫描 -->
+	<context:component-scan base-package="com.ibm.*" />
+
+	<!-- 引入属性文件 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 获取数据源 mysql fund -->
+	<bean id="dataSourceMysql" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassNameMysql}" />
+		<property name="url" value="${jdbc.urlMysql}" />
+		<property name="username" value="${jdbc.usernameMysql}" />
+		<property name="password" value="${jdbc.passwordMysql}" />
+		<property name="maxActive" value="20" />
+		<property name="minIdle" value="8" />
+		<property name="maxIdle" value="5" />
+		<property name="maxWait" value="9000" />
+		<property name="defaultAutoCommit" value="true" />
+	</bean>
+	
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" abstract="false"  
+        lazy-init="false" autowire="default" >  
+        <property name="dataSource">  
+            <ref bean="dataSourceMysql" />  
+        </property>  
+    </bean>  
+	
+	<bean id="sqlSessionFactoryMysql" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceMysql" />
+		<property name="configLocation" value="classpath:sql-mapper.xml" />
+	</bean>
+	<bean id="txManagerMysql"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceMysql" />
+	</bean>
+	<tx:advice id="txAdviceMysql" transaction-manager="txManagerMysql">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="set*" read-only="true" />
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	<import resource="batch_service.xml" />
+
+</beans>

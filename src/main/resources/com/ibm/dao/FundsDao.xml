@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="funds">
+	<insert id="addHistoryFunds" parameterType="java.util.List">
+		
+			INSERT INTO fund.funds (fund_code, date_unix, fund_value_per_unit, fund_value_count, fund_daily_growth_rate, fund_application_state, fund_redemption_state) 
+			VALUES 
+			<foreach collection="list" item="item" index="index" separator=",">
+				(${item})
+			</foreach>
+	</insert>
+	<!-- 评论查询 -->
+	<select id="getFundsCode" resultType="java.lang.String">
+		SELECT 
+		    fund_code
+		FROM
+		    (SELECT 
+		        fund_code
+		    FROM
+		        fund.funds
+		    GROUP BY fund_code) AS fund
+		WHERE
+		    NOT fund_code IN (SELECT 
+		            fund_code
+		        FROM
+		            fund.black_list); 
+	</select>
+	
+</mapper>
