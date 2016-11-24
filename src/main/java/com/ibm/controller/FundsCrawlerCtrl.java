@@ -29,7 +29,7 @@ public class FundsCrawlerCtrl {
 	public @ResponseBody Map<String,Object> everyDayCrawler(@RequestBody HashMap<String,Object> reqMap){
 		Map<String,Object> respMap = new HashMap<>();
 		respMap = fundCrawlerService.fundsEveryDayCrawler("http://fund.eastmoney.com/Data/Fund_JJJZ_Data.aspx?t=1&lx=1&letter=&gsid=&text=&sort=bzdm,asc&page=1,9999&dt=");
-		
+		System.out.println(respMap.get("result"));
 		return respMap;
 	}
 	

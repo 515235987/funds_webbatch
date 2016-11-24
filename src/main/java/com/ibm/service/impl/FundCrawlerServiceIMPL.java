@@ -59,26 +59,42 @@ public class FundCrawlerServiceIMPL implements IFundCrawlerService {
 				for (int i = 0; i < jsonArr.size(); i++) {
 					StringBuffer sb = new StringBuffer();
 					JSONArray jsonSubarr = jsonArr.getJSONArray(i);
+					sb.append("\"");
 					sb.append("1" + jsonSubarr.getString(0));
+					sb.append("\"");
 					sb.append(",");
+					sb.append("\"");
 					try {
 						sb.append(String.valueOf(sdf.parse(dateJson.getString(0).replaceAll("\"", "")).getTime()));
 					} catch (java.text.ParseException e) {
 						// TODO Auto-generated catch block
 						sb.append("0");
 					}
+					sb.append("\"");
 					sb.append(",");
+					sb.append("\"");
 					sb.append(jsonSubarr.getString(3));
+					sb.append("\"");
 					sb.append(",");
+					sb.append("\"");
 					sb.append(jsonSubarr.getString(4));
+					sb.append("\"");
 					sb.append(",");
+					sb.append("\"");
 					sb.append(jsonSubarr.getString(7));
+					sb.append("\"");
 					sb.append(",");
+					sb.append("\"");
 					sb.append(jsonSubarr.getString(8));
+					sb.append("\"");
 					sb.append(",");
+					sb.append("\"");
 					sb.append(jsonSubarr.getString(9));
+					sb.append("\"");
 					sb.append(",");
+					sb.append("\"");
 					sb.append(jsonSubarr.getString(10));
+					sb.append("\"");
 					resultList.add(sb.toString());
 				}
 				result.put("result", resultList);
